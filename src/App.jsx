@@ -1,8 +1,8 @@
 // src/App.jsx
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './components/Home';
-import TaskForm from './components/AddTaskForm';
+import Home from './components/homePage/Home';
+import TaskForm from './components/form/AddTaskForm';
 
 const App = () => {
   return (
