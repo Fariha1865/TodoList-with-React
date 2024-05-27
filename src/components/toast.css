@@ -1,0 +1,13 @@
+.custom-toast {
+    background-color: rgb(75, 77, 78) !important;  
+    color: white !important; 
+    padding: 10px !important; 
+    border-radius: 4px !important;
+    height: 200px;
+    width: 350px; 
+    
+  }
+  .custom-toast .Toastify__close-button {
+    color: white;
+    
+  }
