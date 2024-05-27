@@ -21,7 +21,8 @@ const TaskForm = () => {
     const [deadline, setDeadline] = useState(null);
     const [category, setCategory] = useState('home');
     const [color, setColor] = useState('');
-    const [priority, setPriority] = useState('low');
+    const [priority, setPriority] = useState(0);
+    const [showPriority, setShowPriority] = useState('Select');
     const [showPicker, setShowPicker] = useState(false);
     const [chosenEmoji, setChosenEmoji] = useState(null);
     const [showModal, setShowModal] = useState(false);
@@ -72,6 +73,22 @@ const TaskForm = () => {
         
         navigate('/');
     };
+
+    const settingPriority = (e) =>{
+        console.log(e.target.value)
+        if(e.target.value=="high")
+        {
+            setPriority(1)
+            setShowPriority("high")
+        }else if(e.target.value=="medium")
+        {
+            setPriority(2)
+            setShowPriority("medium")
+        }else if(e.target.value=="low"){
+            setPriority(3)
+            setShowPriority("low")
+        }
+    }
 
     return (
         <form onSubmit={handleSubmit} className="max-w-lg mx-auto mt-8 p-8 border border-purple-500 rounded-lg">
@@ -167,7 +184,8 @@ const TaskForm = () => {
             </div>
             <div className="mb-4">
                 <label htmlFor="priority" className="block text-sm font-bold">Priority</label>
-                <select id="priority" value={priority} onChange={(e) => setPriority(e.target.value)} className="mt-1 block w-full h-10 py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm">
+                <select id="priority" value={showPriority} onChange={(e) => settingPriority(e)} className="mt-1 block w-full h-10 py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm">
+                    <option value="select">Select</option>
                     <option value="low">Low</option>
                     <option value="medium">Medium</option>
                     <option value="high">High</option>

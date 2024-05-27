@@ -1,12 +1,11 @@
-// TaskItem.js
 import React, { useState } from 'react';
 import { RiDeleteBin5Fill } from "react-icons/ri";
 import { Modal } from 'react-responsive-modal';
 import 'react-responsive-modal/styles.css';
 
 const getDaysDifference = (date1, date2) => {
-  const diffTime = Math.abs(date2 - date1);
-  return Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)) - 1);
+  const diffTime = date2 - date1;
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 };
 
 const TaskItem = ({ task, index, handleDeleteTask }) => {
@@ -14,7 +13,6 @@ const TaskItem = ({ task, index, handleDeleteTask }) => {
 
   const currentDate = new Date();
   const deadlineDate = new Date(task.deadline);
-  const isOverdue = deadlineDate < currentDate;
   const daysDifference = getDaysDifference(currentDate, deadlineDate);
 
   const openModal = () => setIsModalOpen(true);
@@ -25,8 +23,17 @@ const TaskItem = ({ task, index, handleDeleteTask }) => {
     closeModal();
   };
 
+  let deadlineText;
+  if (daysDifference < 0) {
+    deadlineText = `Task not completed on time (${Math.abs(daysDifference)} days ago)`;
+  } else if (daysDifference === 0) {
+    deadlineText = "Task is due today";
+  } else {
+    deadlineText = `Task is due in ${daysDifference} days`;
+  }
+
   return (
-    <div className="mb-4 p-4 border border-gray-300 rounded-lg" style={{ backgroundColor: task.color }}>
+    <div className="mb-4 p-4 border border-gray-300 rounded-lg overflow-x-hidden" style={{ backgroundColor: task.color }}>
       <div className="flex justify-between items-center">
         <div className="flex items-center">
           {task.emoji && <img src={task.emoji} alt="Task Emoji" />}
@@ -38,14 +45,14 @@ const TaskItem = ({ task, index, handleDeleteTask }) => {
               </span>
             </div>
             <p className="text-gray-700 mt-2">{task.description}</p>
-            {isOverdue && (
-              <p className="text-red-500 mt-2">Task not completed on time ({daysDifference} days ago)</p>
+            {daysDifference !== 0 && (
+              <p className={`mt-2 ${daysDifference < 0 ? 'text-red-500' : 'text-green-700'}`}>{deadlineText}</p>
             )}
-            <div className="mt-2 flex items-center justify-between">
+            <div className="mt-2 flex justify-between ">
               <span className={`rounded ${task.color}`}>
                 <span className='font-bold text-black mr-2 text-sm'>Category:</span> {task.category}
               </span>
-              <span className="px-2 py-1 rounded bg-gray-200">{task.priority} priority</span>
+              <span className="px-2 py-1 rounded bg-gray-200">{task.priority == 1 ? "High" : task.priority == 2 ? "Medium" : "Low"} priority</span>
               <RiDeleteBin5Fill className='text-2xl cursor-pointer' onClick={openModal} />
             </div>
           </div>
