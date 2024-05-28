@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { RiDeleteBin5Fill,RiEdit2Fill,RiCheckFill  } from "react-icons/ri";
+import { RiDeleteBin5Fill, RiEdit2Fill, RiCheckFill } from "react-icons/ri";
 import { Modal } from 'react-responsive-modal';
 import 'react-responsive-modal/styles.css';
 import EditTaskForm from '../form/EditTaskForm';
+import 'react-tooltip/dist/react-tooltip.css'
+import { Tooltip } from 'react-tooltip'
 
 const getDaysDifference = (date1, date2) => {
   const diffTime = date2 - date1;
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 };
 
-const TaskItem = ({ task, index, handleDeleteTask,handleEditTask, handleCompleteTask,activeCategory  }) => {
+const TaskItem = ({ task, index, handleDeleteTask, handleEditTask, handleCompleteTask, activeCategory }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
@@ -25,11 +27,10 @@ const TaskItem = ({ task, index, handleDeleteTask,handleEditTask, handleComplete
 
   const confirmDeleteTask = () => {
 
-    if(activeCategory === "Completed")
-    {
-      handleDeleteTask(index,activeCategory === 'Completed');
+    if (activeCategory === "Completed") {
+      handleDeleteTask(index, activeCategory === 'Completed');
     }
-    else{
+    else {
       handleDeleteTask(index);
     }
     closeModal();
@@ -71,16 +72,19 @@ const TaskItem = ({ task, index, handleDeleteTask,handleEditTask, handleComplete
               </span>
               <span className="px-2 py-1 rounded bg-gray-200">{task.priority == 1 ? "High" : task.priority == 2 ? "Medium" : "Low"} priority</span>
               <div className="flex space-x-2">
-              {activeCategory !== 'Completed' && (
-                <>
-                  <RiEdit2Fill className='text-2xl cursor-pointer' onClick={() => handleEditTask(index, task)} />
-                  <RiCheckFill className='text-2xl cursor-pointer' onClick={() => handleCompleteTask(index)} />
-                </>
-              )}
-                <RiDeleteBin5Fill className='text-2xl cursor-pointer' onClick={openModal} />
-                {/* <RiDeleteBin5Fill className='text-2xl cursor-pointer' onClick={() => handleDeleteTask(index, activeCategory === 'Completed')} /> */}
-
+                {activeCategory !== 'Completed' && (
+                  <>
+                    <RiEdit2Fill className='text-2xl cursor-pointer' onClick={openEditModal} data-tooltip-id="edit-tooltip" data-tooltip-content="Edit Task"/>
+                    <RiCheckFill className='text-2xl cursor-pointer' onClick={() => handleCompleteTask(index)} data-tooltip-id="complete-tooltip" data-tooltip-content="Complete Task"/>
+                  </>
+                )}
+             
+                  <RiDeleteBin5Fill className='text-2xl cursor-pointer' onClick={openModal} data-tooltip-id="delete-tooltip" data-tooltip-content="Delete Task"/>
+                  <Tooltip id="delete-tooltip" />
+                  <Tooltip id="edit-tooltip" />
+                  <Tooltip id="complete-tooltip" />
                 
+
               </div>
             </div>
           </div>
