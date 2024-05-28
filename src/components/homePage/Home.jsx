@@ -44,10 +44,10 @@ const Home = () => {
       setTasks(updatedTasks);
       localStorage.setItem('tasks', JSON.stringify(updatedTasks));
     }
-  
+
     successToast('Deleted Successfully');
   };
-  
+
 
   const handleCompleteTask = (index) => {
     const updatedTasks = [...tasks];
@@ -97,11 +97,12 @@ const Home = () => {
   };
 
   const filteredTasks = activeCategory === 'Completed' ? completedTasks : (activeCategory === 'All' ? tasks : tasks.filter(task => task.category === activeCategory));
-
+  const percentageCompleted = Math.round((completedTasks.length / (tasks.length + completedTasks.length)) * 100);
+  console.log(tasks.length)
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <Header />
-      <div className="flex flex-col items-center justify-center flex-grow">
+      <div className="flex flex-col items-center  flex-grow">
         {tasks.length === 0 && completedTasks.length === 0 ? (
           <div className="text-center mb-8">
             <p className="text-lg">You don't have any tasks yet</p>
@@ -109,22 +110,27 @@ const Home = () => {
           </div>
         ) : (
           <>
+            <div className='mb-10'>
+              <p>{percentageCompleted}% tasks Completed</p>
+              <progress value={percentageCompleted} max="100"></progress>
+            </div>
             <Tabs
               categories={getUniqueCategories([...tasks, ...completedTasks])}
               activeCategory={activeCategory}
               setActiveCategory={setActiveCategory}
+              completedTasks={completedTasks}
             />
-           {
-            activeCategory === "Completed" ? 
-            <div></div>
-            :
-            <div className="fixed top-4 right-4 m-5">
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={toggleSortOrder}>
-              Sort by Priority <RiArrowUpDownFill className="inline-block ml-1" />
-            </button>
-          </div>
-           }
-            <TaskList tasks={filteredTasks} handleDeleteTask={handleDeleteTask} handleCompleteTask={handleCompleteTask} handleEditTask={handleEditTask} activeCategory ={activeCategory } />
+            {
+              activeCategory === "Completed" ?
+                <div></div>
+                :
+                <div className="fixed top-4 right-4 m-5">
+                  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={toggleSortOrder}>
+                    Sort by Priority <RiArrowUpDownFill className="inline-block ml-1" />
+                  </button>
+                </div>
+            }
+            <TaskList tasks={filteredTasks} handleDeleteTask={handleDeleteTask} handleCompleteTask={handleCompleteTask} handleEditTask={handleEditTask} activeCategory={activeCategory} />
           </>
         )}
         <AddTaskButton />

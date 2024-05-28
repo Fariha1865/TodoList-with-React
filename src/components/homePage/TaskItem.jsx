@@ -66,15 +66,15 @@ const TaskItem = ({ task, index, handleDeleteTask, handleEditTask, handleComplet
             {daysDifference !== 0 && (
               <p className={`mt-2 ${daysDifference < 0 ? 'text-red-500' : 'text-green-700'}`}>{deadlineText}</p>
             )}
-            <div className="mt-2 flex justify-between ">
+            <div className="mt-2 flex justify-between items-center">
               <span className={`rounded ${task.color}`}>
                 <span className='font-bold text-black mr-2 text-sm'>Category:</span> {task.category}
               </span>
-              <span className="px-2 py-1 rounded bg-gray-200">{task.priority == 1 ? "High" : task.priority == 2 ? "Medium" : "Low"} priority</span>
+              <span className="px-2 py-1 rounded bg-gray-200 ml-3">{task.priority == 1 ? "High" : task.priority == 2 ? "Medium" : "Low"} priority</span>
               <div className="flex space-x-2">
                 {activeCategory !== 'Completed' && (
                   <>
-                    <RiEdit2Fill className='text-2xl cursor-pointer' onClick={openEditModal} data-tooltip-id="edit-tooltip" data-tooltip-content="Edit Task"/>
+                    <RiEdit2Fill className='text-2xl cursor-pointer ml-3' onClick={openEditModal} data-tooltip-id="edit-tooltip" data-tooltip-content="Edit Task"/>
                     <RiCheckFill className='text-2xl cursor-pointer' onClick={() => handleCompleteTask(index)} data-tooltip-id="complete-tooltip" data-tooltip-content="Complete Task"/>
                   </>
                 )}

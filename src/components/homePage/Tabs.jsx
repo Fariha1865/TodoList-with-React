@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Tabs = ({ categories, activeCategory, setActiveCategory }) => {
+const Tabs = ({ categories, activeCategory, setActiveCategory,completedTasks }) => {
   return (
     <div className="flex justify-center mb-4">
       {categories.map((category, index) => (
@@ -9,7 +9,8 @@ const Tabs = ({ categories, activeCategory, setActiveCategory }) => {
           className={`mx-2 px-4 py-2 rounded ${activeCategory === category ? 'bg-blue-500 text-white' : 'bg-gray-300'}`}
           onClick={() => setActiveCategory(category)}
         >
-          {category}
+          {category === "Completed" ? `${category} (${completedTasks.length})` : category}
+         
         </button>
       ))}
     </div>
