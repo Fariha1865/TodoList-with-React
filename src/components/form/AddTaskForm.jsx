@@ -90,6 +90,8 @@ const TaskForm = () => {
         }
     }
 
+    const isButtonDisabled = !chosenEmoji || !taskName || !description || !deadline || !category || !color || !priority;
+    
     return (
         <form onSubmit={handleSubmit} className="max-w-lg mx-auto mt-8 p-8 border border-purple-500 rounded-lg">
             <div>
@@ -126,16 +128,16 @@ const TaskForm = () => {
 
             <div className="mb-4">
                 <label htmlFor="taskName" className="block text-sm font-bold">Task Name</label>
-                <input type="text" id="taskName" value={taskName} onChange={(e) => setTaskName(e.target.value)} className="mt-1 focus:ring-purple-500 focus:border-purple-500 block w-full h-10 sm:text-sm border border-gray-300 rounded-md" />
+                <input type="text" id="taskName" value={taskName} onChange={(e) => setTaskName(e.target.value)} required className="p-3 mt-1 focus:ring-purple-500 focus:border-purple-500 block w-full h-10 sm:text-sm border border-gray-300 rounded-md" />
             </div>
             <div className="mb-4">
-                <label htmlFor="description" className="block text-sm font-bold">Description</label>
-                <textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} className="mt-1 focus:ring-purple-500 focus:border-purple-500 block w-full h-10 sm:text-sm border border-gray-300 rounded-md" />
+                <label htmlFor="description" className="block text-sm font-bold">Description (max 20 characters)</label>
+                <textarea id="description" maxLength={20} value={description} onChange={(e) => setDescription(e.target.value)} required className=" pl-3 pt-2 mt-1 focus:ring-purple-500 focus:border-purple-500 block w-full h-10 sm:text-sm border border-gray-300 rounded-md" />
             </div>
             <div className="mb-4">
                 <label htmlFor="deadline" className="block text-sm font-bold">Deadline</label>
                 <div className="relative flex items-center">
-                    <DatePicker id="deadline" selected={deadline} onChange={(date) => setDeadline(date)} className="mt-1 focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border border-gray-300 rounded-md pl-10" />
+                    <DatePicker id="deadline" selected={deadline} onChange={(date) => setDeadline(date)} required className="mt-1 focus:ring-purple-500 focus:border-purple-500 block w-full sm:text-sm border border-gray-300 rounded-md pl-10" />
                     <FaCalendarAlt className="absolute ml-44" />
                 </div>
             </div>
@@ -180,11 +182,11 @@ const TaskForm = () => {
 
             <div className="mb-4">
                 <label htmlFor="color" className="block text-sm font-bold">Color</label>
-                <input type="color" id="color" value={color} onChange={(e) => setColor(e.target.value)} className="mt-1 focus:ring-purple-500 focus:border-purple-500 block w-full h-10 sm:text-sm border border-gray-300 rounded-md" />
+                <input type="color" id="color" value={color} required onChange={(e) => setColor(e.target.value)} className="mt-1 focus:ring-purple-500 focus:border-purple-500 block w-full h-10 sm:text-sm border border-gray-300 rounded-md" />
             </div>
             <div className="mb-4">
                 <label htmlFor="priority" className="block text-sm font-bold">Priority</label>
-                <select id="priority" value={showPriority} onChange={(e) => settingPriority(e)} className="mt-1 block w-full h-10 py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm">
+                <select required id="priority" value={showPriority} onChange={(e) => settingPriority(e)} className="mt-1 block w-full h-10 py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm">
                     <option value="select">Select</option>
                     <option value="low">Low</option>
                     <option value="medium">Medium</option>
@@ -192,7 +194,8 @@ const TaskForm = () => {
                 </select>
             </div>
             <div>
-                <button type="submit" className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">Create Task</button>
+                {console.log(isButtonDisabled)}
+                <button type="submit" disabled={isButtonDisabled} className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white ${isButtonDisabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500'}`}>Create Task</button>
             </div>
         </form>
     );
