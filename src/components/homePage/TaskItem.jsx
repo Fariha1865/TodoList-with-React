@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { RiDeleteBin5Fill } from "react-icons/ri";
+import { RiDeleteBin5Fill,RiEdit2Fill  } from "react-icons/ri";
 import { Modal } from 'react-responsive-modal';
 import 'react-responsive-modal/styles.css';
+import EditTaskForm from '../form/EditTaskForm';
 
 const getDaysDifference = (date1, date2) => {
   const diffTime = date2 - date1;
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 };
 
-const TaskItem = ({ task, index, handleDeleteTask }) => {
+const TaskItem = ({ task, index, handleDeleteTask,handleEditTask }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const currentDate = new Date();
   const deadlineDate = new Date(task.deadline);
@@ -17,6 +19,9 @@ const TaskItem = ({ task, index, handleDeleteTask }) => {
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+
+  const openEditModal = () => setIsEditModalOpen(true);
+  const closeEditModal = () => setIsEditModalOpen(false);
 
   const confirmDeleteTask = () => {
     handleDeleteTask(index);
@@ -31,6 +36,11 @@ const TaskItem = ({ task, index, handleDeleteTask }) => {
   } else {
     deadlineText = `Task is due in ${daysDifference} days`;
   }
+
+  const handleSaveEditedTask = (updatedTask) => {
+    handleEditTask(index, updatedTask);
+    closeEditModal();
+  };
 
   return (
     <div className="mb-4 p-4 border border-gray-300 rounded-lg overflow-x-hidden" style={{ backgroundColor: task.color }}>
@@ -53,7 +63,10 @@ const TaskItem = ({ task, index, handleDeleteTask }) => {
                 <span className='font-bold text-black mr-2 text-sm'>Category:</span> {task.category}
               </span>
               <span className="px-2 py-1 rounded bg-gray-200">{task.priority == 1 ? "High" : task.priority == 2 ? "Medium" : "Low"} priority</span>
-              <RiDeleteBin5Fill className='text-2xl cursor-pointer' onClick={openModal} />
+              <div className="flex space-x-2">
+                <RiEdit2Fill className='text-2xl cursor-pointer' onClick={openEditModal} />
+                <RiDeleteBin5Fill className='text-2xl cursor-pointer' onClick={openModal} />
+              </div>
             </div>
           </div>
         </div>
@@ -64,6 +77,9 @@ const TaskItem = ({ task, index, handleDeleteTask }) => {
           <button className="btn btn-danger" onClick={confirmDeleteTask}>Yes, delete</button>
           <button className="btn btn-primary" onClick={closeModal}>Cancel</button>
         </div>
+      </Modal>
+      <Modal open={isEditModalOpen} onClose={closeEditModal} center>
+        <EditTaskForm task={task} onSave={handleSaveEditedTask} />
       </Modal>
     </div>
   );

@@ -58,6 +58,14 @@ const Home = () => {
     });
   };
 
+  const handleEditTask = (index, updatedTask) => {
+    const updatedTasks = [...tasks];
+    updatedTasks[index] = updatedTask;
+    setTasks(updatedTasks);
+    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+    successToast('Task Updated Successfully');
+  };
+
   const filteredTasks = activeCategory === 'All' ? tasks : tasks.filter(task => task.category === activeCategory);
 
   return (
@@ -81,7 +89,7 @@ const Home = () => {
                 Sort by Priority <RiArrowUpDownFill className="inline-block ml-1" />
               </button>
             </div>
-            <TaskList tasks={filteredTasks} handleDeleteTask={handleDeleteTask} />
+            <TaskList tasks={filteredTasks} handleDeleteTask={handleDeleteTask} handleEditTask={handleEditTask}/>
           </>
         )}
         <AddTaskButton />
