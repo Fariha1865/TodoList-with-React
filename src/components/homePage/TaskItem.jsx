@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { RiDeleteBin5Fill,RiEdit2Fill  } from "react-icons/ri";
+import { RiDeleteBin5Fill,RiEdit2Fill,RiCheckFill  } from "react-icons/ri";
 import { Modal } from 'react-responsive-modal';
 import 'react-responsive-modal/styles.css';
 import EditTaskForm from '../form/EditTaskForm';
@@ -9,7 +9,7 @@ const getDaysDifference = (date1, date2) => {
   return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 };
 
-const TaskItem = ({ task, index, handleDeleteTask,handleEditTask }) => {
+const TaskItem = ({ task, index, handleDeleteTask,handleEditTask, handleCompleteTask,activeCategory  }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
@@ -24,7 +24,14 @@ const TaskItem = ({ task, index, handleDeleteTask,handleEditTask }) => {
   const closeEditModal = () => setIsEditModalOpen(false);
 
   const confirmDeleteTask = () => {
-    handleDeleteTask(index);
+
+    if(activeCategory === "Completed")
+    {
+      handleDeleteTask(index,activeCategory === 'Completed');
+    }
+    else{
+      handleDeleteTask(index);
+    }
     closeModal();
   };
 
@@ -64,8 +71,16 @@ const TaskItem = ({ task, index, handleDeleteTask,handleEditTask }) => {
               </span>
               <span className="px-2 py-1 rounded bg-gray-200">{task.priority == 1 ? "High" : task.priority == 2 ? "Medium" : "Low"} priority</span>
               <div className="flex space-x-2">
-                <RiEdit2Fill className='text-2xl cursor-pointer' onClick={openEditModal} />
+              {activeCategory !== 'Completed' && (
+                <>
+                  <RiEdit2Fill className='text-2xl cursor-pointer' onClick={() => handleEditTask(index, task)} />
+                  <RiCheckFill className='text-2xl cursor-pointer' onClick={() => handleCompleteTask(index)} />
+                </>
+              )}
                 <RiDeleteBin5Fill className='text-2xl cursor-pointer' onClick={openModal} />
+                {/* <RiDeleteBin5Fill className='text-2xl cursor-pointer' onClick={() => handleDeleteTask(index, activeCategory === 'Completed')} /> */}
+
+                
               </div>
             </div>
           </div>

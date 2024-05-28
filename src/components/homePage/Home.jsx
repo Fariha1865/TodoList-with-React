@@ -10,6 +10,7 @@ import { RiArrowUpDownFill } from "react-icons/ri";
 
 const Home = () => {
   const [tasks, setTasks] = useState([]);
+  const [completedTasks, setCompletedTasks] = useState([]);
   const [activeCategory, setActiveCategory] = useState('All');
   const [sortOrder, setSortOrder] = useState('desc');
 
@@ -22,23 +23,61 @@ const Home = () => {
 
   useEffect(() => {
     const storedTasks = localStorage.getItem('tasks');
+    const storedCompletedTasks = localStorage.getItem('completedTasks');
     if (storedTasks) {
       setTasks(JSON.parse(storedTasks));
     }
+    if (storedCompletedTasks) {
+      setCompletedTasks(JSON.parse(storedCompletedTasks));
+    }
   }, []);
-  console.log(tasks)
 
-  const handleDeleteTask = (index) => {
-    const updatedTasks = [...tasks];
-    updatedTasks.splice(index, 1);
-    setTasks(updatedTasks);
-    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+  const handleDeleteTask = (index, isCompleted = false) => {
+    if (isCompleted) {
+      const updatedCompletedTasks = [...completedTasks];
+      updatedCompletedTasks.splice(index, 1);
+      setCompletedTasks(updatedCompletedTasks);
+      localStorage.setItem('completedTasks', JSON.stringify(updatedCompletedTasks));
+    } else {
+      const updatedTasks = [...tasks];
+      updatedTasks.splice(index, 1);
+      setTasks(updatedTasks);
+      localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+    }
+  
     successToast('Deleted Successfully');
+  };
+  
+
+  const handleCompleteTask = (index) => {
+    const updatedTasks = [...tasks];
+    const completedTask = updatedTasks.splice(index, 1)[0];
+    setTasks(updatedTasks);
+    setCompletedTasks([...completedTasks, completedTask]);
+    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+    localStorage.setItem('completedTasks', JSON.stringify([...completedTasks, completedTask]));
+    successToast('Task Completed Successfully');
+  };
+
+  const handleEditTask = (index, updatedTask, isCompleted = false) => {
+    const taskList = isCompleted ? completedTasks : tasks;
+    const updatedTasks = [...taskList];
+    updatedTasks[index] = updatedTask;
+
+    if (isCompleted) {
+      setCompletedTasks(updatedTasks);
+      localStorage.setItem('completedTasks', JSON.stringify(updatedTasks));
+    } else {
+      setTasks(updatedTasks);
+      localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+    }
+
+    successToast('Task Updated Successfully');
   };
 
   const getUniqueCategories = (tasks) => {
     const categories = tasks.map(task => task.category);
-    return ['All', ...new Set(categories)];
+    return ['All', 'Completed', ...new Set(categories)];
   };
 
   const toggleSortOrder = () => {
@@ -53,26 +92,17 @@ const Home = () => {
           return b.priority - a.priority;
         }
       });
-      console.log(sortedTasks)
       return sortedTasks;
     });
   };
 
-  const handleEditTask = (index, updatedTask) => {
-    const updatedTasks = [...tasks];
-    updatedTasks[index] = updatedTask;
-    setTasks(updatedTasks);
-    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
-    successToast('Task Updated Successfully');
-  };
-
-  const filteredTasks = activeCategory === 'All' ? tasks : tasks.filter(task => task.category === activeCategory);
+  const filteredTasks = activeCategory === 'Completed' ? completedTasks : (activeCategory === 'All' ? tasks : tasks.filter(task => task.category === activeCategory));
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
       <Header />
       <div className="flex flex-col items-center justify-center flex-grow">
-        {tasks.length === 0 ? (
+        {tasks.length === 0 && completedTasks.length === 0 ? (
           <div className="text-center mb-8">
             <p className="text-lg">You don't have any tasks yet</p>
             <p className="text-gray-500">Click on the + button to add one</p>
@@ -80,21 +110,26 @@ const Home = () => {
         ) : (
           <>
             <Tabs
-              categories={getUniqueCategories(tasks)}
+              categories={getUniqueCategories([...tasks, ...completedTasks])}
               activeCategory={activeCategory}
               setActiveCategory={setActiveCategory}
             />
-            <div className="fixed top-4 right-4">
-              <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={toggleSortOrder}>
-                Sort by Priority <RiArrowUpDownFill className="inline-block ml-1" />
-              </button>
-            </div>
-            <TaskList tasks={filteredTasks} handleDeleteTask={handleDeleteTask} handleEditTask={handleEditTask}/>
+           {
+            activeCategory === "Completed" ? 
+            <div></div>
+            :
+            <div className="fixed top-4 right-4 m-5">
+            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={toggleSortOrder}>
+              Sort by Priority <RiArrowUpDownFill className="inline-block ml-1" />
+            </button>
+          </div>
+           }
+            <TaskList tasks={filteredTasks} handleDeleteTask={handleDeleteTask} handleCompleteTask={handleCompleteTask} handleEditTask={handleEditTask} activeCategory ={activeCategory } />
           </>
         )}
         <AddTaskButton />
       </div>
-      <ToastContainer position="top-right" autoClose={3000} />
+      <ToastContainer position="top-right" className="mr-20" autoClose={3000} />
     </div>
   );
 };
